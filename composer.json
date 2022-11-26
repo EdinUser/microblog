@@ -1,0 +1,20 @@
+{
+    "name": "todor/microblog",
+    "description": "Microblog/Slim3",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Todor Kirilov",
+            "email": "fallenangelbg@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "slim/slim": "3.0",
+        "slim/twig-view": "2.5.1",
+        "vlucas/phpdotenv": "^5",
+        "symfony/var-dumper": "^v5.4"
+    },
+    "require-dev": {
+    }
+}
