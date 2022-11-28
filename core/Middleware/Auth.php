@@ -4,15 +4,16 @@ namespace MicroBlog\Middleware;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Interfaces\RouterInterface;
 
 class Auth
 {
     /**
-     * @var object
+     * @var RouterInterface
      */
-    private object $router;
+    private RouterInterface $router;
 
-    public function __construct($router)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }

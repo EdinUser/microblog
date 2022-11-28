@@ -57,19 +57,15 @@ class Db
                         {$table}
                   ";
 
-        $whereValues = $whereString = array();
-        foreach ($where as $key => $item) {
-            $whereValues[':' . $key] = $item;
-            $whereString[$key] = $key . " = :" . $key;
-        }
+        $whereDetails = $this->buildQueryFromArray($where);
 
-        $simpleQuery .= ' WHERE ' . implode(" AND ", $whereString);
+        $simpleQuery .= ' WHERE ' . implode(" AND ", $whereDetails['string']);
 
         $buildQuery = $this->db
           ->prepare($simpleQuery);
         $buildQuery
           ->execute(
-            $whereValues
+            $whereDetails['array']
           );
 
         return $this->return_result($buildQuery, $returnType);
@@ -114,5 +110,69 @@ class Db
     function sql_fetch_row(PDOStatement $dbQuery): array|bool
     {
         return $dbQuery->fetch(PDO::FETCH_BOTH);
+    }
+
+
+    /**
+     * Insert or Update into a table
+     *
+     * @param string $table
+     * @param array  $where
+     * @param array  $dataArray
+     * @param string $type
+     *
+     * @return int
+     */
+    function sql_upsert(string $table = '', array $where = array(), array $dataArray = array(), string $type = 'INSERT')
+    {
+        $sql = '';
+        $dataDetails = $this->buildQueryFromArray($dataArray);
+
+        switch ($type) {
+            case 'INSERT':
+                $sql = "
+                INSERT INTO
+                `{$table}`
+                    (`" . implode("`, `", array_keys($dataDetails['string'])) . "`)
+                VALUES
+                    (" . implode(", ", array_keys($dataDetails['array'])) . ")
+                ";
+                break;
+
+            case 'UPDATE':
+
+                break;
+        }
+
+        $upsertQuery = $this->db->prepare($sql);
+        $upsertQuery->execute($dataDetails['array']);
+
+        $stmt = $this->db->query("SELECT LAST_INSERT_ID()");
+        $recordId = $stmt->fetchColumn();
+
+        return $recordId ?? 0;
+
+    }
+
+    /**
+     * Process array to :key=>value for easy op PDO usage
+     *
+     * @param array $where
+     *
+     * @return array[]
+     */
+    private function buildQueryFromArray(array $where): array
+    {
+        $whereValues = $whereString = array();
+        foreach ($where as $key => $item) {
+            $whereValues[':' . $key] = $item;
+            $whereString[$key] = $key . " = :" . $key;
+        }
+
+        return array(
+          'string' => $whereString,
+          'array'  => $whereValues,
+        );
+
     }
 }

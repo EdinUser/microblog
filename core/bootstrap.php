@@ -10,6 +10,7 @@ use Slim\Views\TwigExtension;
 use Slim\Http\Environment;
 use Slim\Http\Uri;
 use Slim\Views\Twig;
+use Twig\Extension\DebugExtension;
 
 $app = new App(
   [
@@ -28,11 +29,13 @@ $container = $app->getContainer();
 $container['view'] = function ($container) {
     $view = new Twig($_ENV['ROOT_FOLDER'] . '/core/Views', [
       'cache' => false,
+      'debug' => ($_ENV['ENV'] === 'DEV'),
     ]);
 
     $router = $container->get('router');
     $uri = Uri::createFromEnvironment(new Environment($_SERVER));
     $view->addExtension(new TwigExtension($router, $uri));
+    $view->addExtension(new DebugExtension());
 
     // add user logged check for Twig usage
     $view->getEnvironment()->addGlobal('is_logged', isset($_SESSION['siteid']));

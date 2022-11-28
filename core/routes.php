@@ -1,9 +1,9 @@
 <?php
 
-use MicroBlog\Controllers\PostController;
-use MicroBlog\Middleware\Auth;
 use Slim\App;
 
+use MicroBlog\Controllers\PostController;
+use MicroBlog\Middleware\Auth;
 use MicroBlog\Controllers\UserController;
 
 /**
@@ -35,15 +35,16 @@ $app->group('/post', function () use ($container) {
       ->setName('post.list');
 
     $this
-      ->get('/send[/{id}]', PostController::class . ':uploadNewPost')
+      ->get('/send[/{id}]', PostController::class . ':managePost')
       ->add(new Auth($container->router))
       ->setName('post.send');
 
     $this
-      ->get('[/{post_slug}]', PostController::class . ':showSinglePost')
+      ->get('[/{post_slug}.html]', PostController::class . ':showSinglePost')
       ->setName('post.show');
 
     $this
-      ->post('', PostController::class . ':updatePost')
+      ->post('', PostController::class . ':savePost')
+      ->add(new Auth($container->router))
       ->setName('post.update');
 });
