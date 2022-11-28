@@ -34,6 +34,10 @@ $container['view'] = function ($container) {
     $uri = Uri::createFromEnvironment(new Environment($_SERVER));
     $view->addExtension(new TwigExtension($router, $uri));
 
+    // add user logged check for Twig usage
+    $view->getEnvironment()->addGlobal('is_logged', isset($_SESSION['siteid']));
+    $view->getEnvironment()->addGlobal('is_admin', isset($_SESSION['is_admin']));
+
     return $view;
 };
 

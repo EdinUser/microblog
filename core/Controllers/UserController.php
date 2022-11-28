@@ -14,11 +14,15 @@ class UserController extends BaseController
      * @param Request  $request
      * @param Response $response
      *
-     * @return mixed
+     * @return Response
      */
-    public function doLogin(Request $request, Response $response)
+    public function doLogin(Request $request, Response $response): Response
     {
-        return $this->container->view->render($response, 'user/login.html.twig');
+        if (!isset($_SESSION['siteid'])) {
+            return $this->container->view->render($response, 'user/login.html.twig');
+        } else {
+            return $this->container->view->render($response, 'user/loggedin.html.twig');
+        }
     }
 
     /**
@@ -69,11 +73,27 @@ class UserController extends BaseController
      */
     private function proceedWithLogin(array $getUserData, Response $response): Response
     {
-        if ($getUserData['is_admin'] === 1) {
+        $_SESSION['siteid'] = $getUserData['user_id'];
+        if ((int)$getUserData['is_admin'] === 1) {
             $_SESSION['is_admin'] = true;
         }
 
         $_SESSION['user_name'] = $getUserData['user_name'];
+
+        return $response->withRedirect($this->container->router->pathFor('home'));
+    }
+
+    /**
+     * OK, time to go out now. Bye-bye!
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     */
+    function logOut(Request $request, Response $response): Response
+    {
+        session_destroy();
 
         return $response->withRedirect($this->container->router->pathFor('home'));
     }

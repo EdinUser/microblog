@@ -1,6 +1,7 @@
 <?php
 
 use MicroBlog\Controllers\PostController;
+use MicroBlog\Middleware\Auth;
 use Slim\App;
 
 use MicroBlog\Controllers\UserController;
@@ -20,17 +21,26 @@ $app->group('/user', function () {
       ->setName('user.login');
 
     $this
+      ->get('/logout', UserController::class . ':logOut')
+      ->setName('user.logout');
+
+    $this
       ->post('/login', UserController::class . ':processLogin')
       ->setName('user.login_process');
 });
 
-$app->group('/post', function () {
+$app->group('/post', function () use ($container) {
     $this
       ->get('/list', PostController::class . ':showPosts')
-      ->setName('post.show');
+      ->setName('post.list');
 
     $this
-      ->get('{post_slug}', PostController::class . ':showSinglePost')
+      ->get('/send[/{id}]', PostController::class . ':uploadNewPost')
+      ->add(new Auth($container->router))
+      ->setName('post.send');
+
+    $this
+      ->get('[/{post_slug}]', PostController::class . ':showSinglePost')
       ->setName('post.show');
 
     $this
