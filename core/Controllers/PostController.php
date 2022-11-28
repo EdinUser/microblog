@@ -7,8 +7,19 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class PostController extends BaseController
+class PostController extends DependencyAware
 {
+    /**
+     * @var Post
+     */
+    private Post $PostModel;
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->PostModel = new Post($container);
+    }
+
     /**
      * Send/Update a Blog Post
      *
@@ -21,17 +32,10 @@ class PostController extends BaseController
     function managePost(Request $request, Response $response, $args): mixed
     {
         if (!empty($args['id'])) {
-            $existingPostData = $this->container->db->sql_query_table(
-              '*',
-              'posts',
-              array(
-                'id' => $args['id'],
-              ),
-              'single'
-            );
+            $existingPost = $this->PostModel->read((int)$args['id']);
         }
 
-        return $this->container->view->render($response, 'posts/manage_post.html.twig');
+        return $this->container->view->render($response, 'posts/manage_post.html.twig', $existingPost ?? array());
     }
 
     /**
@@ -39,32 +43,15 @@ class PostController extends BaseController
      *
      * @param Request  $request
      * @param Response $response
-     * @param          $args
+     * @param array    $args
      *
      * @return Response
      */
     function savePost(Request $request, Response $response, $args): Response
     {
-        // Very bad, but don't know how to do it!
-        $dataForInsert = (new Post())->prepareInsert($request->getParams());
+        $existingPostData = $this->PostModel->save($request->getParams());
 
-        $newPostId = $this->container->db->sql_upsert(
-          'posts',
-          array(),
-          $dataForInsert,
-          'INSERT'
-        );
-
-        if (!empty($newPostId)) {
-            $existingPostData = $this->container->db->sql_query_table(
-              'slug',
-              'posts',
-              array(
-                'post_id' => $newPostId,
-              ),
-              'single'
-            );
-
+        if (!empty($existingPostData)) {
             return $response->withRedirect($this->container->router->pathFor('post.show', ['post_slug' => $existingPostData['slug'] . '.html']));
         } else {
             return $response->withRedirect($this->container->router->pathFor('post.show'), 503);
@@ -73,6 +60,7 @@ class PostController extends BaseController
 
     /**
      * Show a single Post
+     *
      * @param Request  $request
      * @param Response $response
      * @param          $args

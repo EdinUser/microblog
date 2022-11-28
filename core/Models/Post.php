@@ -2,9 +2,10 @@
 
 namespace MicroBlog\Models;
 
-use Slim\Http\Request;
+use MicroBlog\Controllers\DependencyAware;
+use MicroBlog\Interfaces\ModelInterface;
 
-class Post
+class Post extends DependencyAware implements ModelInterface
 {
     /**
      * Some clean up of data for Post
@@ -28,9 +29,40 @@ class Post
         return (array)$data;
     }
 
-    function postPageTitle()
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function read(int $id): mixed
     {
-        return "{$this->title}";
+        return $this->container->db->sql_query_table(
+          '*',
+          'posts',
+          array(
+            'post_id' => $id,
+          ),
+          'single'
+        );
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    public function save($data): array
+    {
+        $dataForInsert = $this->prepareInsert($data);
+
+        $newPostId = $this->container->db->sql_upsert(
+          'posts',
+          array(),
+          $dataForInsert,
+          'INSERT'
+        );
+
+        return $this->read((int)$newPostId);
     }
 
 }

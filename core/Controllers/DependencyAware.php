@@ -4,7 +4,7 @@ namespace MicroBlog\Controllers;
 
 use Slim\Container;
 
-abstract class BaseController
+abstract class DependencyAware
 {
     /**
      * @var Container

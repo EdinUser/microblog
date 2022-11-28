@@ -3,11 +3,25 @@
 namespace MicroBlog\Controllers;
 
 use Exception;
+use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class UserController extends BaseController
+use MicroBlog\Models\User;
+
+class UserController extends DependencyAware
 {
+    /**
+     * @var User
+     */
+    private User $UserModel;
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->UserModel = new User($container);
+    }
+
     /**
      * Show the Login template
      *
@@ -36,29 +50,7 @@ class UserController extends BaseController
      */
     public function processLogin(Request $request, Response $response): Response
     {
-        $getUserData = $this->container->db->sql_query_table(
-          '*',
-          'users',
-          array(
-            'is_admin'  => 1,
-            'is_active' => 1,
-            'user_name' => $request->getParam('username'),
-          ),
-          'single'
-        );
-
-        if (empty($getUserData)) {
-            throw new Exception('No user found', 100);
-        }
-
-        $checkLogin = password_verify($request->getParam('password'), $getUserData['password']);
-        if (!$checkLogin) {
-            throw new Exception('Login problem', 101);
-        }
-
-        if ((int)$getUserData['is_active'] !== 1) {
-            throw new Exception('User not active!', 102);
-        }
+        $getUserData = $this->UserModel->processLogin($request->getParams());
 
         return $this->proceedWithLogin($getUserData, $response);
     }
