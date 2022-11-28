@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y libmagickwand-dev && \
 
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install sockets
+RUN docker-php-ext-install pdo pdo_mysql
 
 COPY vhost.conf /etc/apache2/sites-available/microblog.local.conf
 

@@ -13,8 +13,14 @@
         "slim/slim": "3.0",
         "slim/twig-view": "2.5.1",
         "vlucas/phpdotenv": "^5",
-        "symfony/var-dumper": "^v5.4"
+        "symfony/var-dumper": "^v5.4",
+        "ext-pdo": "*"
     },
     "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "MicroBlog\\": "core"
+        }
     }
 }
