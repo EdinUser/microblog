@@ -17,8 +17,6 @@ RUN docker-php-ext-install pdo pdo_mysql
 
 COPY vhost.conf /etc/apache2/sites-available/microblog.local.conf
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 RUN rm -f /var/run/apache2/apache2.pid
 
 RUN a2dissite 000-default.conf
