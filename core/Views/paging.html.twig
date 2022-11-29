@@ -1,0 +1,17 @@
+<ul class="pagination flex-wrap">
+    {% if pagination.first_page %}
+        <li class="page-item">
+            <a class="page-link" href="{{ pagination.first_page.url }}/p1">1 <i class='fa fa-angle-double-left'></i></a>
+        </li>
+    {% endif %}
+    {% for pageNumber,page in pagination.pages %}
+        <li class="page-item {{ page.active }}">
+            <a class="page-link" href="{{ page.url }}">{{ pageNumber }}</a>
+        </li>
+    {% endfor %}
+    {% if pagination.last_page %}
+        <li class="page-item">
+            <a class="page-link" href="{{ pagination.last_page.url }}/p{{ pagination.last_page.number }}"><i class='fa fa-angle-double-right'></i> {{ pagination.last_page.number }}</a>
+        </li>
+    {% endif %}
+</ul>

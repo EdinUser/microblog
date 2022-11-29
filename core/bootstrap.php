@@ -2,7 +2,6 @@
 session_start();
 
 // Init Slim
-use MicroBlog\Utils\Db;
 use Slim\App;
 use Slim\Exception\MethodNotAllowedException;
 use Slim\Exception\NotFoundException;
@@ -11,6 +10,10 @@ use Slim\Http\Environment;
 use Slim\Http\Uri;
 use Slim\Views\Twig;
 use Twig\Extension\DebugExtension;
+use Twig\TwigFilter;
+
+use MicroBlog\Utils\Db;
+use MicroBlog\Utils\Pagination;
 
 $app = new App(
   [
@@ -37,6 +40,19 @@ $container['view'] = function ($container) {
     $view->addExtension(new TwigExtension($router, $uri));
     $view->addExtension(new DebugExtension());
 
+    // Custom filter to shorten the content
+    $function = new TwigFilter('shorten', function ($text, $length) {
+        $shortText = trim(strip_tags($text));
+        $shortText = preg_replace("/<(.*?)>/s", "", $shortText);
+        $shortText = preg_replace("/\[(.*?)\]/s", "", $shortText);
+
+        $shortText = preg_replace("/^(.{".$length."}).*$/s", "\\1", $shortText);
+
+        return preg_replace("/ [^ ]*$/s", "...", $shortText);
+        // ...
+    });
+    $view->getEnvironment()->addFilter($function);
+
     // add user logged check for Twig usage
     $view->getEnvironment()->addGlobal('is_logged', isset($_SESSION['siteid']));
     $view->getEnvironment()->addGlobal('is_admin', isset($_SESSION['is_admin']));
@@ -46,6 +62,10 @@ $container['view'] = function ($container) {
 
 $container['db'] = function () {
     return new Db();
+};
+
+$container['pagination'] = function ($container) {
+    return new Pagination($container);
 };
 
 // Routes

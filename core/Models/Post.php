@@ -31,19 +31,18 @@ class Post extends DependencyAware implements ModelInterface
     }
 
     /**
-     * @param int $id
+     * @param array  $limiters
+     * @param string $returnType
      *
      * @return mixed
      */
-    public function read(int $id): mixed
+    public function read(array $limiters, string $returnType): mixed
     {
         return $this->container->db->sql_query_table(
           '*',
           'posts',
-          array(
-            'post_id' => $id,
-          ),
-          'single'
+          $limiters,
+          $returnType
         );
     }
 
@@ -73,7 +72,7 @@ class Post extends DependencyAware implements ModelInterface
           $do
         );
 
-        return $this->read((int)$newPostId === 0 ? $existingPostId : (int)$newPostId);
+        return $this->read(['post_id' => (int)$newPostId === 0 ? $existingPostId : (int)$newPostId], 'single');
     }
 
 }

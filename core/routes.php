@@ -31,7 +31,7 @@ $app->group('/user', function () {
 
 $app->group('/post', function () use ($container) {
     $this
-      ->get('/list', PostController::class . ':showPosts')
+      ->get('/list[/p{page}]', PostController::class . ':listPosts')
       ->setName('post.list');
 
     $this

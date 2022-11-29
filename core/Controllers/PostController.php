@@ -27,12 +27,12 @@ class PostController extends DependencyAware
      * @param Response $response
      * @param          $args
      *
-     * @return mixed
+     * @return Response
      */
-    function managePost(Request $request, Response $response, $args): mixed
+    function managePost(Request $request, Response $response, $args): Response
     {
         if (!empty($args['id'])) {
-            $existingPost = $this->PostModel->read((int)$args['id']);
+            $existingPost = $this->PostModel->read(['post_id' => $args['id']], 'single');
         }
 
         return $this->container->view->render($response, 'posts/manage_post.html.twig', $existingPost ?? array());
@@ -64,23 +64,37 @@ class PostController extends DependencyAware
      * @param Response $response
      * @param          $args
      *
-     * @return void
+     * @return Response
      */
-    function showSinglePost(Request $request, Response $response, $args)
+    function showSinglePost(Request $request, Response $response, $args): Response
     {
-        $existingPostData = $this->container->db->sql_query_table(
-          '*',
-          'posts',
-          array(
-            'slug' => $args['post_slug'],
-          ),
-          'single'
-        );
+        $existingPostData = $this->PostModel->read(['slug' => $args['post_slug']], 'single');
+
         return $this->container->view->render($response, 'posts/post.html.twig', $existingPostData ?? array());
     }
 
+    /**
+     * List all available and active posts
+     *
+     * @param Request  $request
+     * @param Response $response
+     * @param          $args
+     *
+     * @return Response
+     */
+    function listPosts(Request $request, Response $response, $args): Response
+    {
+        $existingPostData['posts'] = $this->PostModel->read(['is_active' => 1], 'multiple');
+        $buildPagination = $this->container->pagination->doPagination($existingPostData['posts'], 'post.list');
 
-    function listPosts(Request $request, Response $response, $args){
+        return $this->container->view->render(
+          $response,
+          'posts/list_posts.html.twig',
+          array(
+            'posts'      => $buildPagination['resultArray'],
+            'pagination' => $buildPagination['resultTwig'],
+          ) ?? array()
+        );
 
     }
 }

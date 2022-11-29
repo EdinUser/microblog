@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block page_title %}List Blog posts{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-6 mb-3">
+                <div class="card">
+                    <div class="card-header card-header-gray">
+                        <h4 class="card-title">
+                            <a href="{{ path_for('post.show', {'post_slug': post.slug}) }}">
+                                {{ post.title }}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {{ post.content|shorten('300') }}
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <div>Published: {{ post.date_published|date("d.m.Y H:i") }}</div>
+                            {% if post.date_edited %}
+                                <div>Edited: {{ post.date_edited|date("d.m.Y H:i") }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ include("paging.html.twig") }}
+{% endblock %}

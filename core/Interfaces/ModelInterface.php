@@ -4,7 +4,7 @@ namespace MicroBlog\Interfaces;
 
 interface ModelInterface
 {
-    function read(int $id);
+    function read(array $limiters, string $returnType);
 
     function save($data);
 }
