@@ -6,6 +6,7 @@
     <div class="card">
         <div class="card-header card-header-gray">
             <h2 class="card-title">
+                <span class="material-symbols-outlined">edit</span>
                 {% if post_id %}
                     Edit post
                 {% else %}
@@ -42,7 +43,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <input type="hidden" name="post_id" value="{{ post_id }}" />
+                <input type="hidden" name="post_id" value="{{ post_id }}"/>
                 <input type="submit" value="Save" class="btn btn-success col-6 offset-3">
             </div>
         </form>

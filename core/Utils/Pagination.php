@@ -7,6 +7,12 @@ use Slim\Container;
 
 class Pagination extends DependencyAware
 {
+
+    /**
+     * @var int
+     */
+    private int $on_page = 10;
+
     public function __construct(Container $container)
     {
         parent::__construct($container);
@@ -14,13 +20,16 @@ class Pagination extends DependencyAware
     }
 
     /**
-     * @var int
+     * Build pagination base on array
+     *
+     * @param array  $arrayToBeSplit Data to be used and splitted
+     * @param string $baseUrl        Named route to be used as a base URL
+     * @param int    $on_page        How many items to be on page
+     *
+     * @return array Array with data for usage (array) and a TWIG data to be send to template
      */
-    private int $on_page = 10;
-
-    function doPagination(array $arrayToBeSplit = array(), string $baseUrl = '', int $on_page = 10): array
+    function doPagination(array $arrayToBeSplit = array(), string $baseUrl = '', int $on_page = 1): array
     {
-        $baseUrl = $this->container->router->pathFor($baseUrl);
         $currentUrl = $this->container->request->getUri()->getPath();
 
         if (!empty($on_page)) {
@@ -29,22 +38,8 @@ class Pagination extends DependencyAware
 
         if (preg_match("/.*?\/p(\d*?)$/", $currentUrl, $matches)) {
             $sp = $matches[1];
-            $baseUrl = preg_replace("/(.*?)\/p(\d*?)$/", "\\1", $baseUrl);
         } else {
             $sp = 1;
-        }
-
-        if (stripos($baseUrl, "/") == 0 && stripos($baseUrl, "/") == 1) {
-            $baseUrl = substr($baseUrl, 1);
-        }
-
-        $hashAddOn = "";
-        if (stripos($baseUrl, "#") !== false) {
-            preg_match("/#(\w+)/", $baseUrl, $hashArray);
-            if (isset($hashArray[1])) {
-                $hashAddOn = "#" . $hashArray[1];
-                $baseUrl = preg_replace("/(#\w+)/", "", $baseUrl);
-            }
         }
 
         $allPages = (int)ceil(count($arrayToBeSplit) / $this->on_page);
@@ -62,7 +57,7 @@ class Pagination extends DependencyAware
                     $start = $sp - 4;
                 }
                 if ($start > 2) {
-                    $twigArray['first_page']['url'] = "$baseUrl/p" . ($start - 1) . $hashAddOn;
+                    $twigArray['first_page']['url'] = $this->container->router->pathFor($baseUrl, ['page' => ($start - 1)]);
                 }
             } else {
                 $start = 1;
@@ -75,7 +70,7 @@ class Pagination extends DependencyAware
                     $end = $sp + 5;
                 }
                 if ($end < $pages - 1) {
-                    $twigArray['last_page']['url'] = "$baseUrl/p" . ($end + 1) . $hashAddOn;
+                    $twigArray['last_page']['url'] = $this->container->router->pathFor($baseUrl, ['page' => ($end + 1)]);
                 }
                 if ($end > $pages) {
                     $end = $pages;
@@ -89,13 +84,13 @@ class Pagination extends DependencyAware
                 $start = 1;
             }
             for ($i = $start; $i <= $end; $i++) {
-                $twigArray['pages'][$i]['url'] = "$baseUrl/p" . $i . $hashAddOn;
+                $twigArray['pages'][$i]['url'] = $this->container->router->pathFor($baseUrl, ['page' => $i]);
                 if ($i == $sp) {
                     $twigArray['pages'][$i]['active'] = "active";
                 }
             }
         }
-        $twigArray['base_url'] = $baseUrl . $hashAddOn;
+        $twigArray['base_url'] = $this->container->router->pathFor($baseUrl);
 
         $recordsToBeDisplayed = array_chunk($arrayToBeSplit, $on_page, true);
 

@@ -85,7 +85,7 @@ class PostController extends DependencyAware
     function listPosts(Request $request, Response $response, $args): Response
     {
         $existingPostData['posts'] = $this->PostModel->read(['is_active' => 1], 'multiple');
-        $buildPagination = $this->container->pagination->doPagination($existingPostData['posts'], 'post.list');
+        $buildPagination = $this->container->pagination->doPagination($existingPostData['posts'], 'post.list', 2);
 
         return $this->container->view->render(
           $response,

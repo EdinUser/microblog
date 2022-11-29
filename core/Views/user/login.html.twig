@@ -1,30 +1,45 @@
 {% extends "base.html.twig" %}
 
-{% block page_title %}Home{% endblock %}
+{% block page_title %}Login{% endblock %}
 
 {% block page_content %}
-<div class="card">
-    <div class="card-header card-header-gray">
-        <h2 class="card-title">
-            Login to Microblog
-        </h2>
-    </div>
-    <form method="post" action="{{ path_for('user.login_process') }}">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 offset-3">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" class="form-control"/>
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" class="form-control"/>
+    <div class="card">
+        <div class="card-header card-header-gray">
+            <h2 class="card-title">
+                <span class="material-symbols-outlined">login</span>
+                Login to Microblog
+            </h2>
+        </div>
+        <form method="post" action="{{ path_for('user.login_process') }}">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 offset-3">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="material-symbols-outlined">person</span>
+                                </div>
+                            </div>
+                            <input type="text" name="username" id="username" class="form-control"/>
+                        </div>
+                        <label for="password">Password</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="material-symbols-outlined">password</span>
+                                </div>
+                            </div>
+                            <input type="password" name="password" id="password" class="form-control"/>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Login" class="btn btn-success col-6 offset-3">
-        </div>
-    </form>
-</div>
+            <div class="card-footer">
+                <input type="submit" value="Login" class="btn btn-success col-6 offset-3">
+            </div>
+        </form>
+    </div>
 {% endblock %}
 
 {% block page_js %}{% endblock %}

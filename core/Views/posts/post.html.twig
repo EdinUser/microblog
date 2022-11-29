@@ -9,6 +9,7 @@
                 {{ title }}
                 {% if is_admin %}
                     <a href="{{ path_for('post.send', {'id': post_id}) }}" class="btn btn-warning btn-sm float-right">
+                        <span class="material-symbols-outlined">edit</span>
                         Edit
                     </a>
                 {% endif %}
@@ -19,9 +20,15 @@
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between">
-                <div>Published: {{ date_published|date("d.m.Y H:i") }}</div>
+                <div>
+                    <span class="material-symbols-outlined">today</span>
+                    Published: {{ date_published|date("d.m.Y H:i") }}
+                </div>
                 {% if date_edited %}
-                    <div>Edited: {{ date_edited|date("d.m.Y H:i") }}</div>
+                    <div>
+                        <span class="material-symbols-outlined">edit_calendar</span>
+                        Edited: {{ date_edited|date("d.m.Y H:i") }}
+                    </div>
                 {% endif %}
             </div>
         </div>

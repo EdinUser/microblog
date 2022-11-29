@@ -19,9 +19,15 @@
                     </div>
                     <div class="card-footer">
                         <div class="d-flex justify-content-between">
-                            <div>Published: {{ post.date_published|date("d.m.Y H:i") }}</div>
+                            <div>
+                                <span class="material-symbols-outlined">today</span>
+                                Published: {{ post.date_published|date("d.m.Y H:i") }}
+                            </div>
                             {% if post.date_edited %}
-                                <div>Edited: {{ post.date_edited|date("d.m.Y H:i") }}</div>
+                                <div>
+                                    <span class="material-symbols-outlined">edit_calendar</span>
+                                    Edited: {{ post.date_edited|date("d.m.Y H:i") }}
+                                </div>
                             {% endif %}
                         </div>
                     </div>

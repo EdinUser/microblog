@@ -1,7 +1,11 @@
 <ul class="pagination flex-wrap">
     {% if pagination.first_page %}
         <li class="page-item">
-            <a class="page-link" href="{{ pagination.first_page.url }}/p1">1 <i class='fa fa-angle-double-left'></i></a>
+            <a class="page-link" href="{{ pagination.first_page.url }}/p1">1
+                <span class="material-symbols-outlined">
+                    keyboard_double_arrow_left
+                </span>
+            </a>
         </li>
     {% endif %}
     {% for pageNumber,page in pagination.pages %}
@@ -11,7 +15,11 @@
     {% endfor %}
     {% if pagination.last_page %}
         <li class="page-item">
-            <a class="page-link" href="{{ pagination.last_page.url }}/p{{ pagination.last_page.number }}"><i class='fa fa-angle-double-right'></i> {{ pagination.last_page.number }}</a>
+            <a class="page-link" href="{{ pagination.last_page.url }}/p{{ pagination.last_page.number }}">
+                <span class="material-symbols-outlined">
+                    keyboard_double_arrow_right
+                </span>
+                {{ pagination.last_page.number }}</a>
         </li>
     {% endif %}
 </ul>
