@@ -1,21 +1,31 @@
 {% extends "base.html.twig" %}
 
-{% block page_title %}Home{% enblock %}
+{% block page_title %}Home{% endblock %}
 
 {% block page_content %}
-<div class="card">
-    <div class="card-header card-header-gray">
-        <h2 class="card-title">
-            {{ post. }}
-        </h2>
+    <div class="card">
+        <div class="card-header card-header-gray">
+            <h2 class="card-title">
+                {{ title }}
+                {% if is_admin %}
+                    <a href="{{ path_for('post.send', {'id': post_id}) }}" class="btn btn-warning btn-sm float-right">
+                        Edit
+                    </a>
+                {% endif %}
+            </h2>
+        </div>
+        <div class="card-body">
+            {{ content|raw|nl2br }}
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <div>Published: {{ date_published|date("d.m.Y H:i") }}</div>
+                {% if date_edited %}
+                    <div>Edited: {{ date_edited|date("d.m.Y H:i") }}</div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="card-body">
+{% endblock %}
 
-    </div>
-    <div class="card-footer">
-
-    </div>
-</div>
-{% enblock %}
-
-{% block page_js %}{% enblock %}
+{% block page_js %}{% endblock %}

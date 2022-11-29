@@ -43,16 +43,15 @@ class PostController extends DependencyAware
      *
      * @param Request  $request
      * @param Response $response
-     * @param array    $args
      *
      * @return Response
      */
-    function savePost(Request $request, Response $response, $args): Response
+    function savePost(Request $request, Response $response): Response
     {
         $existingPostData = $this->PostModel->save($request->getParams());
 
         if (!empty($existingPostData)) {
-            return $response->withRedirect($this->container->router->pathFor('post.show', ['post_slug' => $existingPostData['slug'] . '.html']));
+            return $response->withRedirect($this->container->router->pathFor('post.show', ['post_slug' => $existingPostData['slug']]));
         } else {
             return $response->withRedirect($this->container->router->pathFor('post.show'), 503);
         }
@@ -77,6 +76,11 @@ class PostController extends DependencyAware
           ),
           'single'
         );
-        dump($existingPostData);
+        return $this->container->view->render($response, 'posts/post.html.twig', $existingPostData ?? array());
+    }
+
+
+    function listPosts(Request $request, Response $response, $args){
+
     }
 }

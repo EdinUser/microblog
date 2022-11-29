@@ -12,8 +12,7 @@ function buildSLug() {
     const currentTitle = $("#post_title").val();
 
     $("#post_slug").val(currentTitle
-        .replace("\W", "")
-        .replaceAll(" ", "_")
+        .replace(/[\W\s]+/gm, "_")
         .toLowerCase()
     );
 }

@@ -109,7 +109,7 @@ class Db
      */
     function sql_fetch_row(PDOStatement $dbQuery): array|bool
     {
-        return $dbQuery->fetch(PDO::FETCH_BOTH);
+        return $dbQuery->fetch(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
     }
 
 
@@ -123,10 +123,13 @@ class Db
      *
      * @return int
      */
-    function sql_upsert(string $table = '', array $where = array(), array $dataArray = array(), string $type = 'INSERT')
+    function sql_upsert(string $table = '', array $where = array(), array $dataArray = array(), string $type = 'INSERT'): int
     {
         $sql = '';
         $dataDetails = $this->buildQueryFromArray($dataArray);
+        if (!empty($where)) {
+            $whereDetails = $this->buildQueryFromArray($where);
+        }
 
         switch ($type) {
             case 'INSERT':
@@ -140,7 +143,14 @@ class Db
                 break;
 
             case 'UPDATE':
-
+                $sql = "
+                UPDATE
+                `{$table}`
+                SET
+                    " . implode(",\n", $dataDetails['string']) . "
+                WHERE
+                    " . implode(",", $whereDetails['string']) . "
+                ";
                 break;
         }
 
@@ -157,21 +167,21 @@ class Db
     /**
      * Process array to :key=>value for easy op PDO usage
      *
-     * @param array $where
+     * @param array $arrayToProcess
      *
      * @return array[]
      */
-    private function buildQueryFromArray(array $where): array
+    private function buildQueryFromArray(array $arrayToProcess): array
     {
-        $whereValues = $whereString = array();
-        foreach ($where as $key => $item) {
-            $whereValues[':' . $key] = $item;
-            $whereString[$key] = $key . " = :" . $key;
+        $returnValues = $returnString = array();
+        foreach ($arrayToProcess as $key => $item) {
+            $returnValues[':' . $key] = $item;
+            $returnString[$key] = '`' . $key . "` = :" . $key;
         }
 
         return array(
-          'string' => $whereString,
-          'array'  => $whereValues,
+          'string' => $returnString,
+          'array'  => $returnValues,
         );
 
     }

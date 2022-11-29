@@ -16,6 +16,7 @@ class Post extends DependencyAware implements ModelInterface
      */
     function prepareInsert(array $data): array
     {
+        $data = array_filter($data);
         if (empty($data['post_id'])) {
             $data['author_id'] = $_SESSION['siteid'];
         } else {
@@ -55,14 +56,24 @@ class Post extends DependencyAware implements ModelInterface
     {
         $dataForInsert = $this->prepareInsert($data);
 
+        $do = 'INSERT';
+        $existingPostId = 0;
+        if ($dataForInsert['post_id']) {
+            $do = 'UPDATE';
+            $whereArray = array(
+              'post_id' => (int)$dataForInsert['post_id'],
+            );
+            $existingPostId = (int)$dataForInsert['post_id'];
+        }
+
         $newPostId = $this->container->db->sql_upsert(
           'posts',
-          array(),
+          $whereArray ?? array(),
           $dataForInsert,
-          'INSERT'
+          $do
         );
 
-        return $this->read((int)$newPostId);
+        return $this->read((int)$newPostId === 0 ? $existingPostId : (int)$newPostId);
     }
 
 }

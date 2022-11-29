@@ -1,12 +1,16 @@
 {% extends "base.html.twig" %}
 
-{% block page_title %}Home{% endblock %}
+{% block page_title %}{% if post_id %}Edit post{% else %}Create post{% endif %}{% endblock %}
 
 {% block page_content %}
     <div class="card">
         <div class="card-header card-header-gray">
             <h2 class="card-title">
-
+                {% if post_id %}
+                    Edit post
+                {% else %}
+                    Create post
+                {% endif %}
             </h2>
         </div>
         <form method="post" action="{{ path_for('post.update') }}">
@@ -14,23 +18,31 @@
                 <div class="col-8 offset-2">
                     <label for="post_title">Post title</label>
                     <div class="input-group">
-                        <input type="text" name="title" class="form-control" id="post_title">
+                        <input type="text" name="title" class="form-control" id="post_title" value="{{ title }}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <div class="custom-control custom-switch">
-                                    <input type="checkbox" name="is_active" value="1" class="custom-control-input" id="is_active">
+                                    <input
+                                            type="checkbox"
+                                            name="is_active"
+                                            value="1"
+                                            class="custom-control-input"
+                                            id="is_active"
+                                            {% if is_active ==1 %}checked{% endif %}
+                                    >
                                     <label class="custom-control-label" for="is_active">Is active?</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <label for="post_slug">Post slug</label>
-                    <input type="text" name="slug" class="form-control" id="post_slug">
+                    <input type="text" name="slug" class="form-control" id="post_slug" value="{{ slug }}">
                     <label for="post_text">Post text</label>
-                    <textarea name="content" class="form-control" id="post_text" cols="20" rows="20"></textarea>
+                    <textarea name="content" class="form-control" id="post_text" cols="20" rows="20">{{ content|raw }}</textarea>
                 </div>
             </div>
             <div class="card-footer">
+                <input type="hidden" name="post_id" value="{{ post_id }}" />
                 <input type="submit" value="Save" class="btn btn-success col-6 offset-3">
             </div>
         </form>
