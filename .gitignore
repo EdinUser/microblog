@@ -1,5 +1,4 @@
 /vendor/
 /.idea/
 /.env
-/temp/
-/public_html/i/
+/temp/upload_temp/

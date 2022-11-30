@@ -14,7 +14,7 @@ class Db
 
     public function __construct()
     {
-        $this->db = new PDO('mysql:dbname=' . $_ENV['DB_DB'] . ';host=' . $_ENV['DB_SERVER'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+        $this->db = new PDO('mysql:dbname=microblog;host=' . $_ENV['DB_SERVER'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
     }
 
     /**
