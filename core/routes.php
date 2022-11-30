@@ -1,5 +1,6 @@
 <?php
 
+use MicroBlog\Controllers\PictureController;
 use MicroBlog\Controllers\UploadController;
 use Slim\App;
 
@@ -59,3 +60,9 @@ $app
   ->post('/upload', UploadController::class . ':doUpload')
   ->add(new Auth($container->router))
   ->setName('picture.upload');
+
+// Manage existing Pictures, lock it for Admins only
+$app
+  ->post('/picture/remove', PictureController::class . ':removePicture')
+  ->add(new Auth($container->router))
+  ->setName('picture.remove');

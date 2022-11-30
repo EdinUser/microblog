@@ -99,6 +99,7 @@ class Post extends DependencyAware implements ModelInterface
                 $returnPics[substr($baseFileName, 3)]['cropped'] = '/i/' . $postId . '/' . $baseFileName;
             } else {
                 $returnPics[$baseFileName]['full'] = '/i/' . $postId . '/' . $baseFileName;
+                $returnPics[$baseFileName]['base_name'] = $baseFileName;
             }
         }
 

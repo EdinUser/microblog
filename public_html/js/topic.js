@@ -4,6 +4,7 @@ $(function () {
         buildSLug()
     });
     connectUploadButton();
+    connectRemovePictureElement();
 })
 
 /**
@@ -98,4 +99,44 @@ function progressHandlingFunction(e) {
             max: e.total
         });
     }
+}
+
+/**
+ * Attache event for removing a picture
+ */
+function connectRemovePictureElement() {
+    $(".removeFromPost").on("click", function (e) {
+        e.preventDefault();
+
+        const data = $(this).data();
+        const answer = confirm("WARNING!!!\nThis is irreversible. Continue?");
+
+        if (answer) {
+            removePicture(data, $(this))
+        }
+    });
+}
+
+/**
+ * Execute the remove AJAX
+ * @param picture {object}
+ * @param picture.post_id {string} The post ID to be processed
+ * @param picture.picture {string} The name of the picture to be removed
+ * @param clickedElement
+ */
+function removePicture(picture, clickedElement) {
+    $.ajax({
+        url: '/picture/remove', //server script to process data
+        type: 'POST',
+        data: picture,
+        success: function (resp) {
+            console.log(resp);
+            clickedElement.parent().fadeOut("slow", function () {
+                $(this).remove();
+            });
+        },
+        error: function (what) {
+            alert(what);
+        }
+    });
 }

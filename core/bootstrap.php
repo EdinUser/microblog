@@ -31,7 +31,7 @@ $container = $app->getContainer();
 // Register component on container
 $container['view'] = function ($container) {
     $view = new Twig($_ENV['ROOT_FOLDER'] . '/core/Views', [
-      'cache' => false,
+      'cache' => $_ENV['ENV'] === 'DEV' ? false : $_ENV['ROOT_FOLDER'] . '/temp',
       'debug' => ($_ENV['ENV'] === 'DEV'),
     ]);
 
@@ -46,7 +46,7 @@ $container['view'] = function ($container) {
         $shortText = preg_replace("/<(.*?)>/s", "", $shortText);
         $shortText = preg_replace("/\[(.*?)\]/s", "", $shortText);
 
-        $shortText = preg_replace("/^(.{".$length."}).*$/s", "\\1", $shortText);
+        $shortText = preg_replace("/^(.{" . $length . "}).*$/s", "\\1", $shortText);
 
         return preg_replace("/ [^ ]*$/s", "...", $shortText);
         // ...
