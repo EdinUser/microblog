@@ -51,3 +51,6 @@ If you do not have PHP 8 and composer on your computer, you can use the official
 ```shell
 docker run --rm --interactive --tty --volume $PWD:/app composer install
 ```
+
+For the picture upload to work the folders `/temp` and `/public_html/i` should have READ/WRITE access - you can change it to 0777 recursively.
+

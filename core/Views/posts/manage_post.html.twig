@@ -19,7 +19,7 @@
                 <div class="col-8 offset-2">
                     <label for="post_title">Post title</label>
                     <div class="input-group">
-                        <input type="text" name="title" class="form-control" id="post_title" value="{{ title }}">
+                        <input type="text" name="title" class="form-control" id="post_title" value="{{ title }}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <div class="custom-control custom-switch">
@@ -29,7 +29,7 @@
                                             value="1"
                                             class="custom-control-input"
                                             id="is_active"
-                                            {% if is_active == 1 %}checked{% endif %}
+                                            {% if is_active == 1 or not post_id %}checked{% endif %}
                                     >
                                     <label class="custom-control-label" for="is_active">Is active?</label>
                                 </div>
@@ -38,10 +38,10 @@
                     </div>
 
                     <label for="post_slug">Post slug</label>
-                    <input type="text" name="slug" class="form-control" id="post_slug" value="{{ slug }}">
+                    <input type="text" name="slug" class="form-control" id="post_slug" value="{{ slug }}" required>
 
                     <label for="post_text">Post text</label>
-                    <textarea name="content" class="form-control" id="post_text" cols="20" rows="20">{{ content|raw }}</textarea>
+                    <textarea name="content" class="form-control" id="post_text" cols="20" rows="20" required>{{ content|raw }}</textarea>
 
                     <div class="input-group mt-3">
                         <div class="custom-file">
