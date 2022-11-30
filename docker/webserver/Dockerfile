@@ -1,7 +1,6 @@
 FROM php:8.0-apache
 
-RUN apt-get update
-RUN apt-get install -y libz-dev libicu-dev zip unzip && \
+RUN apt-get update && apt-get install -y libz-dev libicu-dev zip unzip && \
     docker-php-ext-configure intl && \
     docker-php-ext-install intl
 
@@ -25,7 +24,6 @@ RUN a2ensite microblog.local.conf
 RUN chown -R www-data:www-data /var/www
 USER www-data
 
-#RUN composer update -0
 EXPOSE 80
 
 # Start Apache

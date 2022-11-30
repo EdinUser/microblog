@@ -14,7 +14,8 @@
         "slim/twig-view": "2.5.1",
         "vlucas/phpdotenv": "^5",
         "symfony/var-dumper": "^v5.4",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-imagick": "*"
     },
     "require-dev": {
     },

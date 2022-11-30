@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Nov 26, 2022 at 12:08 PM
+-- Generation Time: Nov 30, 2022 at 06:53 AM
 -- Server version: 10.9.3-MariaDB-1:10.9.3+maria~ubu2204
 -- PHP Version: 8.0.19
 
@@ -36,7 +36,6 @@ CREATE TABLE `posts` (
   `slug` varchar(255) DEFAULT NULL,
   `content` text NOT NULL,
   `date_published` timestamp NOT NULL DEFAULT current_timestamp(),
-  `published_by` mediumint(4) NOT NULL,
   `date_edited` datetime DEFAULT NULL,
   `edited_by` mediumint(4) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1
@@ -57,6 +56,13 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `user_name`, `password`, `is_admin`, `is_active`) VALUES
+(1, 'shef4e', '$2y$10$l4uRaaa8rMVZqXmXVBNktOQAxiMmZSx4NZv5U9tQkPp/hi7Rhf80C', 1, 1);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -67,7 +73,6 @@ ALTER TABLE `posts`
   ADD PRIMARY KEY (`post_id`),
   ADD KEY `author_id` (`author_id`),
   ADD KEY `slug` (`slug`),
-  ADD KEY `published_by` (`published_by`),
   ADD KEY `edited_by` (`edited_by`);
 
 --
@@ -90,7 +95,7 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` mediumint(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` mediumint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -101,7 +106,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `posts`
   ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`published_by`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`edited_by`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 

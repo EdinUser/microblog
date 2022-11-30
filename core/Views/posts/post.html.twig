@@ -1,9 +1,13 @@
 {% extends "base.html.twig" %}
 
-{% block page_title %}Home{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
 
 {% block page_content %}
     <div class="card">
+        {% if pics %}
+            {% set firstPic = pics|first %}
+            <img src="{{ firstPic.full }}" alt="" class="card-img-top">
+        {% endif %}
         <div class="card-header card-header-gray">
             <h2 class="card-title">
                 {{ title }}

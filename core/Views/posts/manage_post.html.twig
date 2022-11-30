@@ -14,7 +14,7 @@
                 {% endif %}
             </h2>
         </div>
-        <form method="post" action="{{ path_for('post.update') }}">
+        <form method="post" action="{{ path_for('post.update') }}" id="post_form">
             <div class="card-body">
                 <div class="col-8 offset-2">
                     <label for="post_title">Post title</label>
@@ -29,17 +29,34 @@
                                             value="1"
                                             class="custom-control-input"
                                             id="is_active"
-                                            {% if is_active ==1 %}checked{% endif %}
+                                            {% if is_active == 1 %}checked{% endif %}
                                     >
                                     <label class="custom-control-label" for="is_active">Is active?</label>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <label for="post_slug">Post slug</label>
                     <input type="text" name="slug" class="form-control" id="post_slug" value="{{ slug }}">
+
                     <label for="post_text">Post text</label>
                     <textarea name="content" class="form-control" id="post_text" cols="20" rows="20">{{ content|raw }}</textarea>
+
+                    <div class="input-group mt-3">
+                        <div class="custom-file">
+                            <input
+                                    aria-describedby="inputGroupFileAddon01"
+                                    class="custom-file-input uploadButton"
+                                    id="postPics"
+                                    multiple
+                                    name="pics[]"
+                                    type="file"
+                            >
+                            <label class="custom-file-label" for="postPics">Upload pictures to current post</label>
+                        </div>
+                    </div>
+                    <div class="uploadContainer"></div>
                 </div>
             </div>
             <div class="card-footer">

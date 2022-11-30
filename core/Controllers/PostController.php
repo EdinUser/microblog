@@ -31,6 +31,10 @@ class PostController extends DependencyAware
      */
     function managePost(Request $request, Response $response, $args): Response
     {
+        // this is done to ensure not leftover uploads exist
+        if(isset($_SESSION['uploads'])){
+            unset($_SESSION['uploads']);
+        }
         if (!empty($args['id'])) {
             $existingPost = $this->PostModel->read(['post_id' => $args['id']], 'single');
         }

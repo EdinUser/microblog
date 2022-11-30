@@ -24,6 +24,10 @@ class Post extends DependencyAware implements ModelInterface
             $data['edited_by'] = $_SESSION['siteid'];
         }
 
+        if (isset($data['pics'])) {
+            unset($data['pics']);
+        }
+
         $data['content'] = trim($data['content']);
         $data['title'] = trim($data['title']);
 
@@ -38,12 +42,67 @@ class Post extends DependencyAware implements ModelInterface
      */
     public function read(array $limiters, string $returnType): mixed
     {
-        return $this->container->db->sql_query_table(
+        $return = $this->container->db->sql_query_table(
           '*',
           'posts',
           $limiters,
           $returnType
         );
+
+        return $this->readPictures($return);
+    }
+
+    /**
+     * Check for existing pictures and return if any
+     *
+     * @param $return
+     *
+     * @return array
+     */
+    private function readPictures($return): array
+    {
+        if (isset($return['post_id'])) {
+            $readSinglePostPictures = $this->globPostPictures($return['post_id']);
+            if (!empty($readSinglePostPictures)) {
+                $return['pics'] = $readSinglePostPictures;
+            }
+        } else {
+            foreach ($return as $postIndex => &$post) {
+                $readSinglePostPictures = $this->globPostPictures($post->post_id);
+                if (!empty($readSinglePostPictures)) {
+                    $post->pics = $readSinglePostPictures;
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Just a simple method to fetch all cropped pictures
+     *
+     * @param $postId
+     *
+     * @return array
+     */
+    private function globPostPictures($postId): array
+    {
+        $getAllPictures = glob($_ENV['ROOT_FOLDER'] . '/public_html/i/' . $postId . '/*');
+        if (empty($getAllPictures)) {
+            return array();
+        }
+
+        $returnPics = array();
+        foreach ($getAllPictures as $currentFile) {
+            $baseFileName = basename($currentFile);
+            if (stripos($currentFile, 'cr_') !== false) {
+                $returnPics[substr($baseFileName, 3)]['cropped'] = '/i/' . $postId . '/' . $baseFileName;
+            } else {
+                $returnPics[$baseFileName]['full'] = '/i/' . $postId . '/' . $baseFileName;
+            }
+        }
+
+        return $returnPics;
     }
 
     /**
@@ -72,7 +131,32 @@ class Post extends DependencyAware implements ModelInterface
           $do
         );
 
+        // Process uploads (if any) and remove them from $_SESSION
+        if (isset($_SESSION['uploads'])) {
+            $this->processUploadedPics($_SESSION['uploads'], (int)$newPostId === 0 ? $existingPostId : (int)$newPostId);
+            unset($_SESSION['uploads']);
+        }
+
         return $this->read(['post_id' => (int)$newPostId === 0 ? $existingPostId : (int)$newPostId], 'single');
+    }
+
+    private function processUploadedPics(mixed $uploads, $postId = 0)
+    {
+        foreach ($uploads as $uploadedFile) {
+            foreach ($uploadedFile as $file) {
+                if (file_exists($file)) {
+                    $properDestination = $_ENV['ROOT_FOLDER'] . '/public_html/i/' . $postId;
+                    if (!is_dir($properDestination)) {
+                        $testDirCreation = mkdir($properDestination);
+                    }
+
+                    $checkCroppedFileCopy = copy($file, $properDestination . "/" . basename($file));
+                    if ($checkCroppedFileCopy === true) {
+                        unlink($file);
+                    }
+                }
+            }
+        }
     }
 
 }

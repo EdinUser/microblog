@@ -7,6 +7,12 @@
         {% for post in posts %}
             <div class="col-6 mb-3">
                 <div class="card">
+                    {% if post.pics %}
+                        {% set firstPic = post.pics|first %}
+                        <a href="{{ path_for('post.show', {'post_slug': post.slug}) }}">
+                            <img src="{{ firstPic.cropped }}" alt="" class="card-img-top">
+                        </a>
+                    {% endif %}
                     <div class="card-header card-header-gray">
                         <h4 class="card-title">
                             <a href="{{ path_for('post.show', {'post_slug': post.slug}) }}">

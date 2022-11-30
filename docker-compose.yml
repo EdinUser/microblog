@@ -11,6 +11,7 @@ services:
       - '${PORT_APACHE}:80'
     volumes:
       - './:/var/www/html:Z'
+    user: 'www-data'
   db:
     container_name: '${CURRENT_PROJECT_NAME}_mysql'
     image: mariadb

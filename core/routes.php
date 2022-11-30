@@ -1,5 +1,6 @@
 <?php
 
+use MicroBlog\Controllers\UploadController;
 use Slim\App;
 
 use MicroBlog\Controllers\PostController;
@@ -30,21 +31,31 @@ $app->group('/user', function () {
 });
 
 $app->group('/post', function () use ($container) {
+    // List posts
     $this
       ->get('/list[/p{page}]', PostController::class . ':listPosts')
       ->setName('post.list');
 
+    // Upload/Update post
     $this
       ->get('/send[/{id}]', PostController::class . ':managePost')
       ->add(new Auth($container->router))
       ->setName('post.send');
 
+    // Show single post by slug
     $this
       ->get('[/{post_slug}.html]', PostController::class . ':showSinglePost')
       ->setName('post.show');
 
+    // Process the POST data
     $this
       ->post('', PostController::class . ':savePost')
       ->add(new Auth($container->router))
       ->setName('post.update');
 });
+
+// Manage uploads, lock it for Admins only
+$app
+  ->post('/upload', UploadController::class . ':doUpload')
+  ->add(new Auth($container->router))
+  ->setName('picture.upload');
