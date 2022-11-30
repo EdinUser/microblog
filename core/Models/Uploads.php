@@ -36,6 +36,10 @@ class Uploads extends DependencyAware
      */
     function imagickProcessFile($filesObject): bool
     {
+        if (!is_dir($_ENV['ROOT_FOLDER'] . '/temp/upload_temp/')) {
+            mkdir($_ENV['ROOT_FOLDER'] . '/temp/upload_temp/');
+        }
+
         $uploadedFiles = $filesObject['pics'];
         foreach ($uploadedFiles as $currentFileIndex => $currentFile) {
             /**
