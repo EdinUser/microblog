@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block page_title %}Enter admin password{% endblock %}
+
+{% block page_content %}
+    <div class="card">
+        <div class="card-header card-header-gray">
+            <h2 class="card-title">
+                Enter new admin password
+            </h2>
+        </div>
+        <form action="{{ path_for('install.save') }}" method="post">
+            <div class="card-body">
+                <div class="col-8 offset-2">
+                    <label for="admin_username">Enter new admin username</label>
+                    <input type="password" name="admin_username" id="admin_username" class="form-control">
+
+                    <label for="admin_pass">Enter new admin password</label>
+                    <input type="password" name="admin_pass" id="admin_pass" class="form-control">
+
+                    <label for="admin_pass_repeat">Confirm the new admin password</label>
+                    <input type="password" name="admin_pass_repeat" id="admin_pass_repeat" class="form-control">
+                    <div id="warningPass" class="mt-3 alert alert-danger d-none">
+                        <h2>Passwords do not match!</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-success col-6 offset-3" id="savePassword">
+                    <span class="material-symbols-outlined">save</span>
+                    Save the pass
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block page_js %}
+    {{ parent() }}
+    <script type="text/javascript" src="/js/password.js"></script>
+{% endblock %}

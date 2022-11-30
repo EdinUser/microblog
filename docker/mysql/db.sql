@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Nov 30, 2022 at 06:53 AM
+-- Generation Time: Nov 30, 2022 at 09:56 AM
 -- Server version: 10.9.3-MariaDB-1:10.9.3+maria~ubu2204
 -- PHP Version: 8.0.19
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `microblog`
 --
-CREATE DATABASE IF NOT EXISTS `microblog` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `microblog`;
 
 -- --------------------------------------------------------
 
@@ -56,13 +54,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `user_name`, `password`, `is_admin`, `is_active`) VALUES
-(1, 'shef4e', '$2y$10$l4uRaaa8rMVZqXmXVBNktOQAxiMmZSx4NZv5U9tQkPp/hi7Rhf80C', 1, 1);
-
---
 -- Indexes for dumped tables
 --
 
@@ -95,7 +86,7 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` mediumint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` mediumint(4) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

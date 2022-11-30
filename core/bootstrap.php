@@ -14,6 +14,7 @@ use Twig\TwigFilter;
 
 use MicroBlog\Utils\Db;
 use MicroBlog\Utils\Pagination;
+use MicroBlog\Middleware\Install;
 
 $app = new App(
   [
@@ -63,6 +64,8 @@ $container['view'] = function ($container) {
 $container['db'] = function () {
     return new Db();
 };
+
+$app->add(new Install($container));
 
 $container['pagination'] = function ($container) {
     return new Pagination($container);

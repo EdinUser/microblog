@@ -1,11 +1,13 @@
 <?php
 
+use MicroBlog\Controllers\InstallController;
 use MicroBlog\Controllers\PictureController;
 use MicroBlog\Controllers\UploadController;
 use Slim\App;
 
-use MicroBlog\Controllers\PostController;
 use MicroBlog\Middleware\Auth;
+
+use MicroBlog\Controllers\PostController;
 use MicroBlog\Controllers\UserController;
 
 /**
@@ -66,3 +68,8 @@ $app
   ->post('/picture/remove', PictureController::class . ':removePicture')
   ->add(new Auth($container->router))
   ->setName('picture.remove');
+
+// No admin in DB, create new one
+$app
+  ->post('/install', InstallController::class . ':saveNewAdmin')
+  ->setName('install.save');
