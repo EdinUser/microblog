@@ -68,7 +68,9 @@ function doAjaxUpload(file, elem) {
         },
         //Ajax events
         success: function (resp) {
-            console.log(resp);
+            if (resp.status === false) {
+                alert(resp.error + '\nCode: ' + resp.error_code)
+            }
             if (getCurrentId) {
                 $(containerName + getCurrentId).html(resp);
             } else {
@@ -83,7 +85,8 @@ function doAjaxUpload(file, elem) {
             elemId.replaceWith(elemId.clone());
         },
         error: function (what) {
-            console.log(what);
+            alert(what.errorCode + ': ' + what.error())
+            console.error(what);
         }
     });
 }

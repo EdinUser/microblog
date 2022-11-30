@@ -33,8 +33,16 @@ class UploadController extends DependencyAware
      */
     function doUpload(Request $request, Response $response): Response
     {
-        $getResponse = $this->UploadModel->imagickProcessFile($request->getUploadedFiles());
+        try {
+            $this->UploadModel->imagickProcessFile($request->getUploadedFiles());
+            $responseUpload['status'] = true;
+        }
+        catch (Exception $e) {
+            $responseUpload['status'] = false;
+            $responseUpload['error'] = $e->getMessage();
+            $responseUpload['error_code'] = $e->getCode();
+        }
 
-        return $response->withJson(array('status' => $getResponse));
+        return $response->withJson($responseUpload);
     }
 }
